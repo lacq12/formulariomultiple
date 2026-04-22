@@ -10,6 +10,20 @@
 <h2>Registro de Pacientes</h2>
 
 <form id="formPaciente">
+<section class="step active" id="listaPacientesStep">
+  <h3>Pacientes Registrados</h3>
+  <button type="button" onclick="nuevoPaciente()">Nuevo Paciente</button>
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Cédula</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaPacientes"></tbody>
+  </table>
+</section>
 
   <!-- Página 1 -->
   <section class="step active">
