@@ -1,35 +1,40 @@
 let currentStep = 0;
+let pacienteEditandoId = null;
 const steps = document.querySelectorAll('.step');
 
-const paciente = {
-  datosPersonales: {},
-  familiares: [],
-  condiciones: [],
-  internamientos: []
-};
+let paciente = crearPacienteVacio();
+
+function crearPacienteVacio() {
+  return {
+    id: crypto.randomUUID(),
+    datosPersonales: {},
+    familiares: [],
+    condiciones: [],
+    internamientos: []
+  };
+}
 
 function showStep(index) {
-  steps.forEach(step => step.classList.remove('active'));
+  steps.forEach(s => s.classList.remove('active'));
   steps[index].classList.add('active');
 }
 
 function nextStep() {
-  if (currentStep === 0) {
-    const cedula = document.getElementById('cedula').value;
-    if (cedula.length !== 11) {
+  if (currentStep === 1) {
+    if (cedula.value.length !== 11) {
       alert("La cédula debe tener 11 dígitos");
       return;
     }
-
     paciente.datosPersonales = {
       nombres: nombres.value,
       apellidos: apellidos.value,
-      cedula: cedula
+      cedula: cedula.value
     };
   }
 
-  currentStep++;
   if (currentStep === 4) mostrarResumen();
+
+  currentStep++;
   showStep(currentStep);
 }
 
@@ -38,11 +43,54 @@ function prevStep() {
   showStep(currentStep);
 }
 
-function agregarFamiliar() {
-  paciente.familiares.push({
-    nombre: famNombre.value,
-    relacion: famRelacion.value
+/* ====== LISTADO ====== */
+
+function cargarPacientes() {
+  const pacientes = JSON.parse(localStorage.getItem('pacientes')) || [];
+  tablaPacientes.innerHTML = "";
+
+  pacientes.forEach(p => {
+    tablaPacientes.innerHTML += `
+      <tr>
+        <td>${p.datosPersonales.nombres} ${p.datosPersonales.apellidos}</td>
+        <td>${p.datosPersonales.cedula}</td>
+        <td>
+          <button onclick="editarPaciente('${p.id}')">Editar</button>
+        </td>
+      </tr>
+    `;
   });
+}
+
+function nuevoPaciente() {
+  paciente = crearPacienteVacio();
+  pacienteEditandoId = null;
+  limpiarFormulario();
+  currentStep = 1;
+  showStep(currentStep);
+}
+
+/* ====== EDICIÓN ====== */
+
+function editarPaciente(id) {
+  const pacientes = JSON.parse(localStorage.getItem('pacientes')) || [];
+  paciente = pacientes.find(p => p.id === id);
+  pacienteEditandoId = id;
+
+  nombres.value = paciente.datosPersonales.nombres;
+  apellidos.value = paciente.datosPersonales.apellidos;
+  cedula.value = paciente.datosPersonales.cedula;
+
+  cargarListas();
+
+  currentStep = 1;
+  showStep(currentStep);
+}
+
+/* ====== AGREGADOS ====== */
+
+function agregarFamiliar() {
+  paciente.familiares.push({ nombre: famNombre.value, relacion: famRelacion.value });
   listaFamiliares.innerHTML += `<li>${famNombre.value} - ${famRelacion.value}</li>`;
 }
 
@@ -64,15 +112,58 @@ function agregarInternamiento() {
   listaInternamientos.innerHTML += `<li>${fecha.value} - ${centro.value}</li>`;
 }
 
-function mostrarResumen() {
-  document.getElementById('resumen').textContent =
-    JSON.stringify(paciente, null, 2);
+function cargarListas() {
+  listaFamiliares.innerHTML = "";
+  listaCondiciones.innerHTML = "";
+  listaInternamientos.innerHTML = "";
+
+  paciente.familiares.forEach(f =>
+    listaFamiliares.innerHTML += `<li>${f.nombre} - ${f.relacion}</li>`
+  );
+  paciente.condiciones.forEach(c =>
+    listaCondiciones.innerHTML += `<li>${c.enfermedad}</li>`
+  );
+  paciente.internamientos.forEach(i =>
+    listaInternamientos.innerHTML += `<li>${i.fecha} - ${i.centro}</li>`
+  );
 }
+
+/* ====== GUARDAR ====== */
 
 document.getElementById('formPaciente').addEventListener('submit', e => {
   e.preventDefault();
-  let registros = JSON.parse(localStorage.getItem('pacientes')) || [];
-  registros.push(paciente);
-  localStorage.setItem('pacientes', JSON.stringify(registros));
-  alert("Paciente guardado correctamente");
+
+  let pacientes = JSON.parse(localStorage.getItem('pacientes')) || [];
+
+  if (pacienteEditandoId) {
+    pacientes = pacientes.map(p =>
+      p.id === pacienteEditandoId ? paciente : p
+    );
+  } else {
+    pacientes.push(paciente);
+  }
+
+  localStorage.setItem('pacientes', JSON.stringify(pacientes));
+  alert("Paciente guardado");
+
+  currentStep = 0;
+  showStep(currentStep);
+  cargarPacientes();
 });
+
+/* ====== UTIL ====== */
+
+function mostrarResumen() {
+  resumen.textContent = JSON.stringify(paciente, null, 2);
+}
+
+function limpiarFormulario() {
+  document.querySelectorAll("input, textarea").forEach(e => e.value = "");
+  listaFamiliares.innerHTML = "";
+  listaCondiciones.innerHTML = "";
+  listaInternamientos.innerHTML = "";
+}
+
+/* ====== INIT ====== */
+
+document.addEventListener('DOMContentLoaded', cargarPacientes);
