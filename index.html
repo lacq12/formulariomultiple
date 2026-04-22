@@ -7,38 +7,41 @@
 </head>
 <body>
 
-<h2>Registro de Pacientes</h2>
+<h2>Portal de Registro de Pacientes</h2>
 
 <form id="formPaciente">
-<section class="step active" id="listaPacientesStep">
-  <h3>Pacientes Registrados</h3>
-  <button type="button" onclick="nuevoPaciente()">Nuevo Paciente</button>
-  <table border="1" width="100%">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Cédula</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tablaPacientes"></tbody>
-  </table>
-</section>
+
+  <!-- Página 0 - Listado -->
+  <section class="step active">
+    <h3>Pacientes Registrados</h3>
+    <button type="button" onclick="nuevoPaciente()">Nuevo Paciente</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Cédula</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tablaPacientes"></tbody>
+    </table>
+  </section>
 
   <!-- Página 1 -->
-  <section class="step active">
+  <section class="step">
     <h3>1. Datos Personales</h3>
-    <input type="text" id="nombres" placeholder="Nombres" required>
-    <input type="text" id="apellidos" placeholder="Apellidos" required>
-    <input type="text" id="cedula" placeholder="Cédula (11 dígitos)" maxlength="11" required>
+    <input id="nombres" placeholder="Nombres" required>
+    <input id="apellidos" placeholder="Apellidos" required>
+    <input id="cedula" placeholder="Cédula (11 dígitos)" maxlength="11" required>
     <button type="button" onclick="nextStep()">Siguiente</button>
   </section>
 
   <!-- Página 2 -->
   <section class="step">
     <h3>2. Familiares</h3>
-    <input type="text" id="famNombre" placeholder="Nombre Familiar">
-    <input type="text" id="famRelacion" placeholder="Relación">
+    <input id="famNombre" placeholder="Nombre familiar">
+    <input id="famRelacion" placeholder="Relación">
     <button type="button" onclick="agregarFamiliar()">Agregar</button>
     <ul id="listaFamiliares"></ul>
     <button type="button" onclick="prevStep()">Atrás</button>
@@ -47,9 +50,9 @@
 
   <!-- Página 3 -->
   <section class="step">
-    <h3>3. Condiciones Pre-Existentes</h3>
-    <input type="text" id="enfermedad" placeholder="Enfermedad">
-    <input type="text" id="tiempo" placeholder="Tiempo con la enfermedad">
+    <h3>3. Condiciones Pre‑Existentes</h3>
+    <input id="enfermedad" placeholder="Enfermedad">
+    <input id="tiempo" placeholder="Tiempo con la enfermedad">
     <textarea id="detalle" placeholder="Detalle"></textarea>
     <button type="button" onclick="agregarCondicion()">Agregar</button>
     <ul id="listaCondiciones"></ul>
@@ -61,8 +64,8 @@
   <section class="step">
     <h3>4. Internamientos Realizados</h3>
     <input type="date" id="fecha">
-    <input type="text" id="centro" placeholder="Centro Médico">
-    <input type="text" id="diagnostico" placeholder="Diagnóstico">
+    <input id="centro" placeholder="Centro Médico">
+    <input id="diagnostico" placeholder="Diagnóstico">
     <button type="button" onclick="agregarInternamiento()">Agregar</button>
     <ul id="listaInternamientos"></ul>
     <button type="button" onclick="prevStep()">Atrás</button>
@@ -71,7 +74,7 @@
 
   <!-- Página 5 -->
   <section class="step">
-    <h3>5. Resumen del Paciente</h3>
+    <h3>5. Resumen</h3>
     <pre id="resumen"></pre>
     <button type="button" onclick="prevStep()">Atrás</button>
     <button type="submit">Grabar</button>
