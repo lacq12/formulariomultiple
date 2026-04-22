@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Pacientes</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<h2>Registro de Pacientes</h2>
+
+<form id="formPaciente">
+
+  <!-- Página 1 -->
+  <section class="step active">
+    <h3>1. Datos Personales</h3>
+    <input type="text" id="nombres" placeholder="Nombres" required>
+    <input type="text" id="apellidos" placeholder="Apellidos" required>
+    <input type="text" id="cedula" placeholder="Cédula (11 dígitos)" maxlength="11" required>
+    <button type="button" onclick="nextStep()">Siguiente</button>
+  </section>
+
+  <!-- Página 2 -->
+  <section class="step">
+    <h3>2. Familiares</h3>
+    <input type="text" id="famNombre" placeholder="Nombre Familiar">
+    <input type="text" id="famRelacion" placeholder="Relación">
+    <button type="button" onclick="agregarFamiliar()">Agregar</button>
+    <ul id="listaFamiliares"></ul>
+    <button type="button" onclick="prevStep()">Atrás</button>
+    <button type="button" onclick="nextStep()">Siguiente</button>
+  </section>
+
+  <!-- Página 3 -->
+  <section class="step">
+    <h3>3. Condiciones Pre-Existentes</h3>
+    <input type="text" id="enfermedad" placeholder="Enfermedad">
+    <input type="text" id="tiempo" placeholder="Tiempo con la enfermedad">
+    <textarea id="detalle" placeholder="Detalle"></textarea>
+    <button type="button" onclick="agregarCondicion()">Agregar</button>
+    <ul id="listaCondiciones"></ul>
+    <button type="button" onclick="prevStep()">Atrás</button>
+    <button type="button" onclick="nextStep()">Siguiente</button>
+  </section>
+
+  <!-- Página 4 -->
+  <section class="step">
+    <h3>4. Internamientos Realizados</h3>
+    <input type="date" id="fecha">
+    <input type="text" id="centro" placeholder="Centro Médico">
+    <input type="text" id="diagnostico" placeholder="Diagnóstico">
+    <button type="button" onclick="agregarInternamiento()">Agregar</button>
+    <ul id="listaInternamientos"></ul>
+    <button type="button" onclick="prevStep()">Atrás</button>
+    <button type="button" onclick="nextStep()">Siguiente</button>
+  </section>
+
+  <!-- Página 5 -->
+  <section class="step">
+    <h3>5. Resumen del Paciente</h3>
+    <pre id="resumen"></pre>
+    <button type="button" onclick="prevStep()">Atrás</button>
+    <button type="submit">Grabar</button>
+  </section>
+
+</form>
+
+<script src="js/app.js"></script>
+</body>
+</html>
