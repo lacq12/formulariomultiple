@@ -1,6 +1,6 @@
 body {
-  font-family: Arial;
-  max-width: 600px;
+  font-family: Arial, sans-serif;
+  max-width: 700px;
   margin: auto;
 }
 
@@ -13,7 +13,18 @@ body {
 }
 
 input, textarea, button {
-  display: block;
   width: 100%;
-  margin: 8px 0;
+  margin: 6px 0;
+  padding: 6px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: left;
 }
