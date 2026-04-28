@@ -1,8 +1,12 @@
+/* ================= VARIABLES ================= */
+
 let currentStep = 0;
 let pacienteEditandoId = null;
 const steps = document.querySelectorAll('.step');
 
 let paciente = crearPacienteVacio();
+
+/* ================= CREAR PACIENTE ================= */
 
 function crearPacienteVacio() {
   return {
@@ -23,15 +27,13 @@ function showStep(index) {
 
 function nextStep() {
 
-  // Validación datos personales
+  // Paso 1: Datos personales
   if (currentStep === 1) {
-
     if (cedula.value.length !== 11) {
       alert("La cédula debe tener 11 dígitos");
       return;
     }
 
-    // NO sobrescribir el objeto completo
     paciente.datosPersonales.nombres = nombres.value;
     paciente.datosPersonales.apellidos = apellidos.value;
     paciente.datosPersonales.cedula = cedula.value;
@@ -62,40 +64,48 @@ function cargarPacientes() {
         <td>${p.datosPersonales.nombres} ${p.datosPersonales.apellidos}</td>
         <td>${p.datosPersonales.cedula}</td>
         <td>
-          <button onclick="editarPaciente('${p.id}')">Editar</button>
+          <!-- CORRECCIÓN CLAVE -->
+          <button type="button" onclick="editarPaciente('${p.id}')">
+            Editar
+          </button>
         </td>
       </tr>
     `;
   });
 }
 
+/* ================= NUEVO ================= */
+
 function nuevoPaciente() {
   paciente = crearPacienteVacio();
   pacienteEditandoId = null;
   limpiarFormulario();
   cedula.disabled = false;
+
   currentStep = 1;
   showStep(currentStep);
 }
 
-/* ================= EDICIÓN ================= */
+/* ================= EDITAR ================= */
 
 function editarPaciente(id) {
   const pacientes = JSON.parse(localStorage.getItem('pacientes')) || [];
   paciente = pacientes.find(p => p.id === id);
   pacienteEditandoId = id;
 
+  // Cargar datos
   nombres.value = paciente.datosPersonales.nombres;
   apellidos.value = paciente.datosPersonales.apellidos;
   cedula.value = paciente.datosPersonales.cedula;
   cedula.disabled = true;
 
   cargarListas();
+
   currentStep = 1;
   showStep(currentStep);
 }
 
-/* ================= AGREGADOS ================= */
+/* ================= AGREGAR DATOS ================= */
 
 function agregarFamiliar() {
   paciente.familiares.push({
@@ -125,6 +135,8 @@ function agregarInternamiento() {
 
   listaInternamientos.innerHTML += `<li>${fecha.value} - ${centro.value}</li>`;
 }
+
+/* ================= CARGAR LISTAS ================= */
 
 function cargarListas() {
   listaFamiliares.innerHTML = "";
@@ -167,7 +179,7 @@ document.getElementById('formPaciente').addEventListener('submit', e => {
   cargarPacientes();
 });
 
-/* ================= UTIL ================= */
+/* ================= UTILIDADES ================= */
 
 function mostrarResumen() {
   resumen.textContent = JSON.stringify(paciente, null, 2);
