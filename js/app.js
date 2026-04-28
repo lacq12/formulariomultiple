@@ -14,25 +14,32 @@ function crearPacienteVacio() {
   };
 }
 
+/* ================= PASOS ================= */
+
 function showStep(index) {
   steps.forEach(s => s.classList.remove('active'));
   steps[index].classList.add('active');
 }
 
 function nextStep() {
+
+  // Validación datos personales
   if (currentStep === 1) {
+
     if (cedula.value.length !== 11) {
       alert("La cédula debe tener 11 dígitos");
       return;
     }
-    paciente.datosPersonales = {
-      nombres: nombres.value,
-      apellidos: apellidos.value,
-      cedula: cedula.value
-    };
+
+    // NO sobrescribir el objeto completo
+    paciente.datosPersonales.nombres = nombres.value;
+    paciente.datosPersonales.apellidos = apellidos.value;
+    paciente.datosPersonales.cedula = cedula.value;
   }
 
-  if (currentStep === 4) mostrarResumen();
+  if (currentStep === 4) {
+    mostrarResumen();
+  }
 
   currentStep++;
   showStep(currentStep);
@@ -43,7 +50,7 @@ function prevStep() {
   showStep(currentStep);
 }
 
-/* ====== LISTADO ====== */
+/* ================= LISTADO ================= */
 
 function cargarPacientes() {
   const pacientes = JSON.parse(localStorage.getItem('pacientes')) || [];
@@ -66,11 +73,12 @@ function nuevoPaciente() {
   paciente = crearPacienteVacio();
   pacienteEditandoId = null;
   limpiarFormulario();
+  cedula.disabled = false;
   currentStep = 1;
   showStep(currentStep);
 }
 
-/* ====== EDICIÓN ====== */
+/* ================= EDICIÓN ================= */
 
 function editarPaciente(id) {
   const pacientes = JSON.parse(localStorage.getItem('pacientes')) || [];
@@ -80,17 +88,21 @@ function editarPaciente(id) {
   nombres.value = paciente.datosPersonales.nombres;
   apellidos.value = paciente.datosPersonales.apellidos;
   cedula.value = paciente.datosPersonales.cedula;
+  cedula.disabled = true;
 
   cargarListas();
-
   currentStep = 1;
   showStep(currentStep);
 }
 
-/* ====== AGREGADOS ====== */
+/* ================= AGREGADOS ================= */
 
 function agregarFamiliar() {
-  paciente.familiares.push({ nombre: famNombre.value, relacion: famRelacion.value });
+  paciente.familiares.push({
+    nombre: famNombre.value,
+    relacion: famRelacion.value
+  });
+
   listaFamiliares.innerHTML += `<li>${famNombre.value} - ${famRelacion.value}</li>`;
 }
 
@@ -100,6 +112,7 @@ function agregarCondicion() {
     tiempo: tiempo.value,
     detalle: detalle.value
   });
+
   listaCondiciones.innerHTML += `<li>${enfermedad.value}</li>`;
 }
 
@@ -109,6 +122,7 @@ function agregarInternamiento() {
     centro: centro.value,
     diagnostico: diagnostico.value
   });
+
   listaInternamientos.innerHTML += `<li>${fecha.value} - ${centro.value}</li>`;
 }
 
@@ -120,15 +134,17 @@ function cargarListas() {
   paciente.familiares.forEach(f =>
     listaFamiliares.innerHTML += `<li>${f.nombre} - ${f.relacion}</li>`
   );
+
   paciente.condiciones.forEach(c =>
     listaCondiciones.innerHTML += `<li>${c.enfermedad}</li>`
   );
+
   paciente.internamientos.forEach(i =>
     listaInternamientos.innerHTML += `<li>${i.fecha} - ${i.centro}</li>`
   );
 }
 
-/* ====== GUARDAR ====== */
+/* ================= GUARDAR ================= */
 
 document.getElementById('formPaciente').addEventListener('submit', e => {
   e.preventDefault();
@@ -151,7 +167,7 @@ document.getElementById('formPaciente').addEventListener('submit', e => {
   cargarPacientes();
 });
 
-/* ====== UTIL ====== */
+/* ================= UTIL ================= */
 
 function mostrarResumen() {
   resumen.textContent = JSON.stringify(paciente, null, 2);
@@ -164,6 +180,6 @@ function limpiarFormulario() {
   listaInternamientos.innerHTML = "";
 }
 
-/* ====== INIT ====== */
+/* ================= INIT ================= */
 
 document.addEventListener('DOMContentLoaded', cargarPacientes);
